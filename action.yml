@@ -1,0 +1,75 @@
+name: Post Slack Message
+description: Posts a Slack message to a given channel
+inputs:
+  github_token:
+    description: A GitHub token used to enrich the Slack message. Defaults to the one provided by the GitHub action context.
+    required: true
+    default: ${{ github.token }}
+  slack_token:
+    description: >
+      Slack authentication token bearing required scopes.
+
+      Example: xxxx-xxxxxxxxx-xxxx
+    required: true
+  channel:
+    description: >
+      Channel, private group, or IM channel to send message to. Can be an encoded ID, or a name. 
+
+      Example: C1234567890
+    required: true
+  status:
+    description: >
+      The current status of the job. Defaults to the one provided by the context.
+      Possible values: success, failure, cancelled
+    required: true
+    default: ${{ job.status }}
+  mention:
+    description: >
+      A trigger word that should be used to mention a channel, a team or a user.
+      Reference: https://api.slack.com/reference/surfaces/formatting#mentioning-users
+
+      Example: here
+    default: ""
+    required: false
+  if_mention:
+    description: >
+      A condition when the mention should be applied. The value can be success, failure, cancelled or always.
+      Multiple conditions can be separated with a comma.
+
+      Example: success,failure
+    default: ""
+    required: false
+  fields:
+    description: >
+      A list of fields that should be used to enrich the message.
+      Not all fields might be available, e.g. if a workflow has been started with the workflow_dispatch event,
+      it might not be possible to fetch data related to a PR.
+      If you specify more than one field, please separate them with a comma, e.g. commit,repo
+      Possible fields are: repo, message, commit, actor, job, duration, eventName, ref, pr, workflow
+    default: ""
+    required: false
+  text:
+    description: >
+      A message that can be formatted using Slack's mrkdwn format.. This input is optional if a 'header' or 'custom_blocks' input is provided.
+      In case one of the mentioned inputs is provided as well, the 'text' will be used as fallback and as the text 
+      displayed in notifications.
+    required: false
+  header:
+    description: A header, displayed at the top of the Slack message.
+    required: false
+  changelog:
+    description: A changelog, which will be displayed within the message.
+    required: false
+  buttons:
+    description: >
+      A list of buttons, using new lines as separator.
+      Each line has the format 'title|url'. It is also possible to change the style of the button by inserting a
+      style of Slack's Button Element (https://api.slack.com/reference/block-kit/block-elements#button)
+      between the 'title' and the 'url', e.g. 'title|style|url'.
+    required: false
+  custom_blocks:
+    description: A JSON-based array of structured blocks. Setting this property will override the default blocks.
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
