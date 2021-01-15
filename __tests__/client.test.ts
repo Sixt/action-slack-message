@@ -48,13 +48,13 @@ describe('Client', () => {
       expect(client.input).toStrictEqual(input);
     });
 
-    test('init uses default fields when none given', async () => {
+    test('init uses default if_mention when none given', async () => {
       const input = {
         ...newInput(),
         status: 'success',
       };
       const client = new Client(input, gitHubToken, slackToken);
-      expect(client.input.fields).toStrictEqual('workflow,ref');
+      expect(client.input.if_mention).toStrictEqual('always');
     });
 
     test('init uses correct job name', async () => {
@@ -437,6 +437,39 @@ describe('Client', () => {
         status: 'success',
         mention: 'here',
         if_mention: 'always',
+        text: 'mention test',
+      };
+      let client = new Client(input, gitHubToken, slackToken);
+      let payload = getTemplate(input, process.env);
+      const block: SectionBlock = {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `<!here> ${input.text}`,
+        },
+      };
+
+      payload.blocks!.unshift(block);
+      expect(await client.composeMessage()).toStrictEqual(payload);
+
+      input.status = 'failure';
+      client = new Client(input, gitHubToken, slackToken);
+      payload = getTemplate(input, process.env);
+      payload.blocks!.unshift(block);
+      expect(await client.composeMessage()).toStrictEqual(payload);
+
+      input.status = 'cancelled';
+      client = new Client(input, gitHubToken, slackToken);
+      payload = getTemplate(input, process.env);
+      payload.blocks!.unshift(block);
+      expect(await client.composeMessage()).toStrictEqual(payload);
+    });
+
+    test('can be mentioned without if_mention condition', async () => {
+      const input = {
+        ...newInput(),
+        status: 'success',
+        mention: 'here',
         text: 'mention test',
       };
       let client = new Client(input, gitHubToken, slackToken);

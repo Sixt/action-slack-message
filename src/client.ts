@@ -51,7 +51,7 @@ export class Client {
 
   constructor(input: Input, githubToken: string, slackToken: string) {
     this.input = input;
-    if (this.input.fields === '') this.input.fields = 'workflow,ref';
+    if (this.input.if_mention === '') this.input.if_mention = 'always';
 
     this.octokit = getOctokit(githubToken);
     this.webclient = new WebClient(slackToken);
