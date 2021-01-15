@@ -89,6 +89,17 @@ describe('Client', () => {
       expect(await client.composeMessage()).toStrictEqual(payload);
     });
 
+    test('order of fields when push event', async () => {
+      const input = {
+        ...newInput(),
+        status: 'success',
+        fields: 'ref,message,actor,job,repo,duration,eventName,pr,workflow,commit',
+      };
+      const client = new Client(input, gitHubToken, slackToken);
+      const payload = getTemplate(input, process.env);
+      expect(await client.composeMessage()).toStrictEqual(payload);
+    });
+
     test('all individual fields when pull_request event', async () => {
       process.env.GITHUB_EVENT_NAME = 'pull_request';
       // eslint-disable-next-line @typescript-eslint/no-var-requires

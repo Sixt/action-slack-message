@@ -83,18 +83,27 @@ export const getTemplate = (input: Input, env: NodeJS.ProcessEnv, sha?: string):
 const fixedFields = (fields: string, env: NodeJS.ProcessEnv, sha?: string): MrkdwnElement[] => {
   const ff = new FieldFactory(fields, env.GITHUB_JOB as string, getOctokit(gitHubToken));
   return ff.filterFields([
-    ff.includes('repo') ? repo(env.GITHUB_REPOSITORY as string) : undefined,
-    ff.includes('message') ? message() : undefined,
-    ff.includes('commit') ? commit(env.GITHUB_REPOSITORY as string, env.GITHUB_SHA as string) : undefined,
-    ff.includes('actor') ? actor(env.GITHUB_ACTOR as string) : undefined,
-    ff.includes('job') ? job(env.GITHUB_REPOSITORY as string, env.GITHUB_JOB as string) : undefined,
-    ff.includes('duration') ? duration() : undefined,
-    ff.includes('eventName') ? eventName(env.GITHUB_EVENT_NAME as string) : undefined,
-    ff.includes('ref') ? ref(env.GITHUB_REPOSITORY as string) : undefined,
-    ff.includes('pr') ? pr(env.GITHUB_REPOSITORY as string, '123') : undefined,
-    ff.includes('workflow')
-      ? workflow(env.GITHUB_REPOSITORY as string, (sha ?? env.GITHUB_SHA) as string, env.GITHUB_WORKFLOW as string)
-      : undefined,
+    { name: 'repo', value: ff.includes('repo') ? repo(env.GITHUB_REPOSITORY as string) : undefined },
+    { name: 'message', value: ff.includes('message') ? message() : undefined },
+    {
+      name: 'commit',
+      value: ff.includes('commit') ? commit(env.GITHUB_REPOSITORY as string, env.GITHUB_SHA as string) : undefined,
+    },
+    { name: 'actor', value: ff.includes('actor') ? actor(env.GITHUB_ACTOR as string) : undefined },
+    {
+      name: 'job',
+      value: ff.includes('job') ? job(env.GITHUB_REPOSITORY as string, env.GITHUB_JOB as string) : undefined,
+    },
+    { name: 'duration', value: ff.includes('duration') ? duration() : undefined },
+    { name: 'eventName', value: ff.includes('eventName') ? eventName(env.GITHUB_EVENT_NAME as string) : undefined },
+    { name: 'ref', value: ff.includes('ref') ? ref(env.GITHUB_REPOSITORY as string) : undefined },
+    { name: 'pr', value: ff.includes('pr') ? pr(env.GITHUB_REPOSITORY as string, '123') : undefined },
+    {
+      name: 'workflow',
+      value: ff.includes('workflow')
+        ? workflow(env.GITHUB_REPOSITORY as string, (sha ?? env.GITHUB_SHA) as string, env.GITHUB_WORKFLOW as string)
+        : undefined,
+    },
   ]);
 };
 

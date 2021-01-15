@@ -19,22 +19,43 @@ export class FieldFactory {
     return this.requestedFields.includes(field) || this.requestedFields.includes('all');
   }
 
-  filterFields(fields: (MrkdwnElement | undefined)[]): MrkdwnElement[] {
-    return fields.filter(element => element !== undefined) as MrkdwnElement[];
+  filterFields(fields: { name: string; value: MrkdwnElement | undefined }[]): MrkdwnElement[] {
+    if (this.requestedFields.includes('all')) {
+      return fields.map(f => f.value).filter(element => element !== undefined) as MrkdwnElement[];
+    } else {
+      const sortedFields = this.requestedFields.map(fieldName => {
+        return fields.find(f => f.name == fieldName)?.value;
+      });
+      return sortedFields.filter(element => element !== undefined) as MrkdwnElement[];
+    }
   }
 
   async fields(): Promise<MrkdwnElement[]> {
     return this.filterFields([
-      this.includes('repo') ? createField('Repository', await this.repo()) : undefined,
-      this.includes('message') ? createField('Message', await this.message()) : undefined,
-      this.includes('commit') ? createField('Commit', await this.commit()) : undefined,
-      this.includes('actor') ? createField('Actor', await this.actor()) : undefined,
-      this.includes('job') ? createField('Job', await this.job()) : undefined,
-      this.includes('duration') ? createField('Duration', await this.duration()) : undefined,
-      this.includes('eventName') ? createField('Event', await this.eventName()) : undefined,
-      this.includes('ref') ? createField(context.ref.includes('tags') ? 'Tag' : 'Branch', await this.ref()) : undefined,
-      this.includes('pr') ? createField('Pull request', await this.pr()) : undefined,
-      this.includes('workflow') ? createField('Workflow', await this.workflow()) : undefined,
+      { name: 'repo', value: this.includes('repo') ? createField('Repository', await this.repo()) : undefined },
+      { name: 'message', value: this.includes('message') ? createField('Message', await this.message()) : undefined },
+      { name: 'commit', value: this.includes('commit') ? createField('Commit', await this.commit()) : undefined },
+      { name: 'actor', value: this.includes('actor') ? createField('Actor', await this.actor()) : undefined },
+      { name: 'job', value: this.includes('job') ? createField('Job', await this.job()) : undefined },
+      {
+        name: 'duration',
+        value: this.includes('duration') ? createField('Duration', await this.duration()) : undefined,
+      },
+      {
+        name: 'eventName',
+        value: this.includes('eventName') ? createField('Event', await this.eventName()) : undefined,
+      },
+      {
+        name: 'ref',
+        value: this.includes('ref')
+          ? createField(context.ref.includes('tags') ? 'Tag' : 'Branch', await this.ref())
+          : undefined,
+      },
+      { name: 'pr', value: this.includes('pr') ? createField('Pull request', await this.pr()) : undefined },
+      {
+        name: 'workflow',
+        value: this.includes('workflow') ? createField('Workflow', await this.workflow()) : undefined,
+      },
     ]);
   }
 
