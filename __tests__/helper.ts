@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import { iconForStatus, Input } from '../src/client';
 import { FieldFactory } from '../src/fields';
 import { getOctokit } from '@actions/github';
-import { ChatPostMessageArguments, MrkdwnElement } from '@slack/web-api';
+import { ChatPostMessageArguments, MrkdwnElement, SectionBlock } from '@slack/web-api';
 
 export const gitHubToken = 'github-token';
 export const slackToken = 'token';
@@ -49,14 +49,10 @@ export const newInput = (): Input => {
 };
 
 export const getTemplate = (input: Input, env: NodeJS.ProcessEnv, sha?: string): ChatPostMessageArguments => {
-  return {
+  const messageArguments: ChatPostMessageArguments = {
     channel: input.channel,
     text: input.text,
     blocks: [
-      {
-        type: 'section',
-        fields: fixedFields(input.fields, env, sha),
-      },
       {
         type: 'divider',
       },
@@ -78,6 +74,21 @@ export const getTemplate = (input: Input, env: NodeJS.ProcessEnv, sha?: string):
       },
     ],
   };
+
+  if (input.fields) {
+    const fields = fixedFields(input.fields, env, sha);
+    if (Array.isArray(fields) && fields.length !== 0) {
+      const block: SectionBlock = {
+        type: 'section',
+        fields: fields,
+      };
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      messageArguments.blocks!.unshift(block);
+    }
+  }
+
+  return messageArguments;
 };
 
 const fixedFields = (fields: string, env: NodeJS.ProcessEnv, sha?: string): MrkdwnElement[] => {

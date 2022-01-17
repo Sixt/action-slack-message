@@ -111,7 +111,7 @@ export class Client {
     }
 
     const fields = await this.fieldFactory.fields();
-    if (fields) {
+    if (Array.isArray(fields) && fields.length !== 0) {
       const fieldsBlock: SectionBlock = {
         type: 'section',
         fields: await this.fieldFactory.fields(),
@@ -121,7 +121,7 @@ export class Client {
 
     if (this.input.buttons) {
       const buttonBlocks = this.parseButtons(this.input.buttons);
-      if (buttonBlocks) {
+      if (Array.isArray(buttonBlocks) && buttonBlocks.length !== 0) {
         const block: ActionsBlock = {
           type: 'actions',
           elements: buttonBlocks,
