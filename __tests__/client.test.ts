@@ -318,7 +318,7 @@ describe('Client', () => {
         ],
       };
 
-      payload.blocks!.splice(1, 0, block);
+      payload.blocks!.unshift(block);
       expect(await client.composeMessage()).toStrictEqual(payload);
     });
   });
