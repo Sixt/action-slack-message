@@ -54,7 +54,11 @@ async function run(): Promise<void> {
       await client.send(await client.composeMessage());
     }
   } catch (error) {
-    setFailed(error.message);
+    if (error instanceof Error) {
+      setFailed(error.message);
+    } else {
+      setFailed('Unknown error');
+    }
   }
 }
 
