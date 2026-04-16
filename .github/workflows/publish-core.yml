@@ -1,0 +1,38 @@
+name: Publish @sixt/slack-message
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 0.2.0)'
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+
+      - run: npm ci
+      - run: npm test -w @sixt/slack-message
+      - run: npm version ${{ inputs.version }} --no-git-tag-version -w packages/core
+
+      - run: npm publish -w packages/core
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit version bump and tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add packages/core/package.json
+          git commit -m "chore: release @sixt/slack-message@${{ inputs.version }}"
+          git tag "core-v${{ inputs.version }}"
+          git push && git push --tags
