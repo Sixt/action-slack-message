@@ -1,10 +1,10 @@
 import nock from 'nock';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { iconForStatus, Input } from '../src/client';
+import { Input } from '../src/client';
 import { FieldFactory } from '../src/fields';
 import { getOctokit } from '@actions/github';
-import { SlackBlock } from '@sixt/slack-message';
+import { SlackBlock, iconForStatus } from '@sixt/slack-message';
 
 interface MrkdwnElement {
   type: 'mrkdwn';

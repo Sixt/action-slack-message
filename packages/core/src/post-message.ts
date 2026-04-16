@@ -18,5 +18,9 @@ export async function postMessage({ token, channel, text, blocks }: PostMessageO
     throw new Error(`Slack API error: ${result.error}`);
   }
 
-  return { ts: result.ts!, channel: result.channel! };
+  if (!result.ts || !result.channel) {
+    throw new Error('Slack API error: missing ts or channel in response');
+  }
+
+  return { ts: result.ts, channel: result.channel };
 }

@@ -708,7 +708,7 @@ describe('Client', () => {
         expect(body).toMatchObject({ channel: 'C123', text: 'Lorem ipsum' });
         return body;
       })
-      .reply(200, { ok: true });
+      .reply(200, { ok: true, ts: '1234.5678', channel: 'C123' });
 
     const input = newInput();
     const client = new Client(input, gitHubToken, 'token');

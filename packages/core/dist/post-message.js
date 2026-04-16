@@ -27,6 +27,9 @@ function postMessage(_a) {
         if (!result.ok) {
             throw new Error(`Slack API error: ${result.error}`);
         }
+        if (!result.ts || !result.channel) {
+            throw new Error('Slack API error: missing ts or channel in response');
+        }
         return { ts: result.ts, channel: result.channel };
     });
 }

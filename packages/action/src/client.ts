@@ -28,7 +28,7 @@ export interface Input {
   custom_blocks: string;
 }
 
-export { iconForStatus };
+
 
 export class Client {
   input: Input;
