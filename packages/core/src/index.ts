@@ -13,4 +13,11 @@ export {
   injectMention,
 } from './blocks';
 export { postMessage } from './post-message';
-export type { SlackBlock, ButtonDefinition, ButtonStyle, PostMessageOptions, ComposeOptions } from './types';
+export type {
+  SlackBlock,
+  ButtonDefinition,
+  ButtonStyle,
+  PostMessageOptions,
+  PostMessageResult,
+  ComposeOptions,
+} from './types';

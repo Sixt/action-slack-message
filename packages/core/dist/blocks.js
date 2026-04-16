@@ -159,8 +159,8 @@ function compose(options) {
     if (options.buttons && options.buttons.length > 0) {
         blocks.push(buttons(options.buttons));
     }
-    blocks.push(divider());
     if (options.footerText) {
+        blocks.push(divider());
         blocks.push(contextFooter({
             icon: options.footerIcon,
             text: options.footerText,

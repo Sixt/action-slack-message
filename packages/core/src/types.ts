@@ -20,6 +20,11 @@ export interface PostMessageOptions {
   blocks?: SlackBlock[];
 }
 
+export interface PostMessageResult {
+  ts: string;
+  channel: string;
+}
+
 export interface ComposeOptions {
   header?: string;
   text?: string;

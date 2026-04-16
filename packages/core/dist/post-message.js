@@ -27,6 +27,7 @@ function postMessage(_a) {
         if (!result.ok) {
             throw new Error(`Slack API error: ${result.error}`);
         }
+        return { ts: result.ts, channel: result.channel };
     });
 }
 //# sourceMappingURL=post-message.js.map

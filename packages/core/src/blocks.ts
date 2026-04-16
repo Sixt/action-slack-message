@@ -169,9 +169,8 @@ export function compose(options: ComposeOptions): SlackBlock[] {
     blocks.push(buttons(options.buttons));
   }
 
-  blocks.push(divider());
-
   if (options.footerText) {
+    blocks.push(divider());
     blocks.push(
       contextFooter({
         icon: options.footerIcon,

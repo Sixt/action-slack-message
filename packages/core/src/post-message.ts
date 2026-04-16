@@ -1,6 +1,6 @@
-import { PostMessageOptions } from './types';
+import { PostMessageOptions, PostMessageResult } from './types';
 
-export async function postMessage({ token, channel, text, blocks }: PostMessageOptions): Promise<void> {
+export async function postMessage({ token, channel, text, blocks }: PostMessageOptions): Promise<PostMessageResult> {
   const payload: Record<string, unknown> = { channel, text };
   if (blocks?.length) payload.blocks = blocks;
 
@@ -13,8 +13,10 @@ export async function postMessage({ token, channel, text, blocks }: PostMessageO
     body: JSON.stringify(payload),
   });
 
-  const result = (await response.json()) as { ok: boolean; error?: string };
+  const result = (await response.json()) as { ok: boolean; error?: string; ts?: string; channel?: string };
   if (!result.ok) {
     throw new Error(`Slack API error: ${result.error}`);
   }
+
+  return { ts: result.ts!, channel: result.channel! };
 }
