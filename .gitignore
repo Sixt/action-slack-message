@@ -119,5 +119,4 @@ out
 
 # Build output
 lib
-packages/core/dist
 packages/action/lib
