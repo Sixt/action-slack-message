@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "description": "A GitHub Action to post messages to Slack using plain text, markdown or Slack's block syntax.",
+  "exports": {
+    "./core": {
+      "types": "./packages/core/dist/index.d.ts",
+      "default": "./packages/core/dist/index.js"
+    }
+  },
   "workspaces": ["packages/*"],
   "scripts": {
     "build": "npm run build --workspaces",
