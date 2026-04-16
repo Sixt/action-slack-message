@@ -1,0 +1,18 @@
+{
+  "name": "action-slack-message",
+  "version": "0.1.0",
+  "description": "A GitHub Action to post messages to Slack using plain text, markdown or Slack's block syntax.",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "pack": "ncc build lib/index.js -m -o dist",
+    "test": "jest",
+    "release": "npm run build && npm run pack"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.9.1",
+    "@actions/github": "^4.0.0",
+    "@sixt/slack-message": "*"
+  }
+}

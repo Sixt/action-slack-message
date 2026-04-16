@@ -4,7 +4,7 @@ process.env.GITHUB_EVENT_NAME = 'pull_request';
 
 import { setupNockCommit, getTemplate, newInput, gitHubToken, slackToken } from './helper';
 import { Client } from '../src/client';
-import { SectionBlock } from '@slack/web-api';
+import { SlackBlock } from '@sixt/slack-message';
 
 beforeAll(() => {
   // Mock logs so they don't show up in test logs.
@@ -43,7 +43,7 @@ describe('pull request event', () => {
     };
     const client = new Client(input, gitHubToken, slackToken);
     const payload = getTemplate(input, process.env, sha);
-    const block: SectionBlock = {
+    const block: SlackBlock = {
       type: 'section',
       text: {
         type: 'mrkdwn',

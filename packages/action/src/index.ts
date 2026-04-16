@@ -49,7 +49,7 @@ async function run(): Promise<void> {
     );
 
     if (custom_blocks) {
-      await client.send(await client.custom(custom_blocks));
+      await client.send(client.custom(custom_blocks));
     } else {
       await client.send(await client.composeMessage());
     }

@@ -1,8 +1,12 @@
 import { warning } from '@actions/core';
 import { context } from '@actions/github';
-import { MrkdwnElement } from '@slack/web-api';
 import { env } from 'process';
 import { Octokit } from './client';
+
+interface MrkdwnElement {
+  type: 'mrkdwn';
+  text: string;
+}
 
 export class FieldFactory {
   requestedFields: string[];
