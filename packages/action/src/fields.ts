@@ -155,7 +155,7 @@ export class FieldFactory {
     } else if (ref.includes('heads')) {
       const branch = extractName(ref);
       value = `\`<https://github.com/${owner}/${repo}/tree/${branch}|${branch}>\``;
-    } else if (ref.includes('pulls')) {
+    } else if (ref.includes('pull/')) {
       const headRefEnvVar = env['GITHUB_HEAD_REF'];
       if (headRefEnvVar) {
         const branch = extractName(headRefEnvVar);
