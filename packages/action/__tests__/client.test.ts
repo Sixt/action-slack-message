@@ -1,21 +1,11 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import nock from 'nock';
-import {
-  setupNockCommit,
-  setupNockJobs,
-  getTemplate,
-  getApiFixture,
-  newInput,
-  gitHubToken,
-  slackToken,
-} from './helper';
+import { setupNockCommit, setupNockJobs, getTemplate, newInput, gitHubToken, slackToken } from './helper';
 
 import { Client, Input } from '../src/client';
 import { SlackBlock, ButtonDefinition } from '@sixt/slack-message';
 
 beforeAll(() => {
   // Mock logs so they don't show up in test logs.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   jest.spyOn(require('@actions/core'), 'debug').mockImplementation(jest.fn());
   nock.disableNetConnect();
   setupNockCommit(process.env.GITHUB_REPOSITORY as string, process.env.GITHUB_SHA as string);
@@ -28,7 +18,6 @@ afterAll(() => {
 
 describe('Client', () => {
   beforeEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const github = require('@actions/github');
     github.context.payload = {};
   });
@@ -102,7 +91,6 @@ describe('Client', () => {
 
     test('all individual fields when pull_request event', async () => {
       process.env.GITHUB_EVENT_NAME = 'pull_request';
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const github = require('@actions/github');
       const sha = 'expected-sha-for-pull_request_event';
       github.context.payload = {
@@ -713,23 +701,21 @@ describe('Client', () => {
   });
 
   test('send payload', async () => {
-    const core = require('@sixt/slack-message');
-    const postMessageSpy = jest.spyOn(core, 'postMessage').mockResolvedValue(undefined);
+    const fn = jest.fn();
+    nock('https://slack.com')
+      .post('/api/chat.postMessage', body => {
+        fn();
+        expect(body).toMatchObject({ channel: 'C123', text: 'Lorem ipsum' });
+        return body;
+      })
+      .reply(200, { ok: true });
 
     const input = newInput();
     const client = new Client(input, gitHubToken, 'token');
 
     await client.send({ channel: 'C123', text: 'Lorem ipsum' });
 
-    expect(postMessageSpy).toBeCalledTimes(1);
-    expect(postMessageSpy).toBeCalledWith({
-      token: 'token',
-      channel: 'C123',
-      text: 'Lorem ipsum',
-      blocks: undefined,
-    });
-
-    postMessageSpy.mockRestore();
+    expect(fn).toHaveBeenCalledTimes(1);
   });
 
   describe('injectMentionIntoMessage', () => {

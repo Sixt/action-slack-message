@@ -14,4 +14,5 @@ module.exports = {
   collectCoverage: true,
   preset: 'ts-jest',
   globalSetup: './__tests__/setupTest.ts',
+  setupFiles: ['./__tests__/setup.ts'],
 };

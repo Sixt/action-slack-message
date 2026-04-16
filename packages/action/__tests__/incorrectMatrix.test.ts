@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import nock from 'nock';
 
 process.env.GITHUB_RUN_ID = '2';
@@ -10,9 +9,7 @@ import { SlackBlock } from '@sixt/slack-message';
 
 beforeAll(() => {
   // Mock logs so they don't show up in test logs.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   jest.spyOn(require('@actions/core'), 'warning').mockImplementation(jest.fn());
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   jest.spyOn(require('@actions/core'), 'debug').mockImplementation(jest.fn());
   nock.disableNetConnect();
   setupNockCommit(process.env.GITHUB_REPOSITORY as string, process.env.GITHUB_SHA as string);
@@ -30,7 +27,6 @@ afterAll(() => {
 describe('MATRIX_CONTEXT', () => {
   beforeEach(() => {
     process.env.GITHUB_EVENT_NAME = 'push';
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const github = require('@actions/github');
     github.context.payload = {};
   });

@@ -8,7 +8,6 @@ import { SlackBlock } from '@sixt/slack-message';
 
 beforeAll(() => {
   // Mock logs so they don't show up in test logs.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   jest.spyOn(require('@actions/core'), 'debug').mockImplementation(jest.fn());
   nock.disableNetConnect();
   setupNockCommit(process.env.GITHUB_REPOSITORY as string, process.env.GITHUB_SHA as string);
@@ -20,7 +19,6 @@ afterAll(() => {
 
 describe('pull request event', () => {
   test('works on pull request event', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const github = require('@actions/github');
     const sha = 'expected-sha-for-pull_request_event';
     github.context.payload = {
@@ -51,7 +49,6 @@ describe('pull request event', () => {
       },
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     payload.blocks!.unshift(block);
     expect(await client.composeMessage()).toStrictEqual(payload);
   });

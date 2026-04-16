@@ -94,7 +94,6 @@ export const getTemplate = (input: Input, env: NodeJS.ProcessEnv, sha?: string):
         fields: fields,
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       messageArguments.blocks!.unshift(block);
     }
   }
@@ -187,7 +186,6 @@ const ref = (repo: string): MrkdwnElement => {
 };
 
 const pr = (repo: string, prNumber: string): MrkdwnElement | undefined => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const github = require('@actions/github');
   if (github.context.payload.pull_request) {
     return createField({
