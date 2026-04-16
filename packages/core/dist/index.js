@@ -16,4 +16,3 @@ Object.defineProperty(exports, "mention", { enumerable: true, get: function () {
 Object.defineProperty(exports, "injectMention", { enumerable: true, get: function () { return blocks_1.injectMention; } });
 var post_message_1 = require("./post-message");
 Object.defineProperty(exports, "postMessage", { enumerable: true, get: function () { return post_message_1.postMessage; } });
-//# sourceMappingURL=index.js.map

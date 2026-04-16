@@ -168,4 +168,3 @@ function compose(options) {
     }
     return blocks;
 }
-//# sourceMappingURL=blocks.js.map

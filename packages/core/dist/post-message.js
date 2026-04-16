@@ -30,4 +30,3 @@ function postMessage(_a) {
         return { ts: result.ts, channel: result.channel };
     });
 }
-//# sourceMappingURL=post-message.js.map
