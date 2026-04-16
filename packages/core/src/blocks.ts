@@ -56,6 +56,14 @@ export function divider(): SlackBlock {
   return { type: 'divider' };
 }
 
+export function field(title: string, value: string): { type: string; text: string } {
+  return { type: 'mrkdwn', text: `*${title}*\n${value}` };
+}
+
+export function link(url: string, text: string): string {
+  return `<${url}|${text}>`;
+}
+
 export function contextFooter(opts: { icon?: string; text: string }): SlackBlock {
   const elements: Record<string, unknown>[] = [];
   if (opts.icon) {

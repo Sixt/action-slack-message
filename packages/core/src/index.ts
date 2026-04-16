@@ -5,6 +5,8 @@ export {
   changelog,
   buttons,
   divider,
+  field,
+  link,
   contextFooter,
   iconForStatus,
   mention,
