@@ -1,0 +1,92 @@
+name: E2E Test
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Slack channel to post to (e.g. #test-channel or C1234567890)'
+        required: true
+      slack_token:
+        description: 'Slack token (or leave empty to use the secret)'
+        required: false
+
+jobs:
+  test-basic:
+    name: Basic message
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Post basic message
+        uses: ./
+        with:
+          slack_token: ${{ inputs.slack_token || secrets.SLACK_TOKEN }}
+          channel: ${{ inputs.channel }}
+          header: ':test_tube: E2E Test — Basic Message'
+          text: 'This is a test message from the refactored action.'
+          status: success
+
+  test-fields:
+    name: Message with fields
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Post message with fields
+        uses: ./
+        with:
+          slack_token: ${{ inputs.slack_token || secrets.SLACK_TOKEN }}
+          channel: ${{ inputs.channel }}
+          header: ':test_tube: E2E Test — Fields'
+          text: 'Testing field enrichment from GitHub context.'
+          fields: repo,commit,actor,workflow
+          status: ${{ job.status }}
+
+  test-buttons:
+    name: Message with buttons
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Post message with buttons and changelog
+        uses: ./
+        with:
+          slack_token: ${{ inputs.slack_token || secrets.SLACK_TOKEN }}
+          channel: ${{ inputs.channel }}
+          header: ':test_tube: E2E Test — Buttons & Changelog'
+          text: 'Testing buttons and changelog rendering.'
+          changelog: 'abc1234 refactor: split into monorepo\ndef5678 chore: update dependencies'
+          buttons: |
+            Repository|https://github.com/${{ github.repository }}
+            Pull Requests|primary|https://github.com/${{ github.repository }}/pulls
+          status: success
+
+  test-mention:
+    name: Message with mention
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Post message with mention
+        uses: ./
+        with:
+          slack_token: ${{ inputs.slack_token || secrets.SLACK_TOKEN }}
+          channel: ${{ inputs.channel }}
+          header: ':test_tube: E2E Test — Mention'
+          text: '*Headline*\nThis tests mention injection after a fake headline.'
+          mention: here
+          if_mention: always
+          status: success
+
+  test-custom-blocks:
+    name: Custom blocks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Post custom blocks
+        uses: ./
+        with:
+          slack_token: ${{ inputs.slack_token || secrets.SLACK_TOKEN }}
+          channel: ${{ inputs.channel }}
+          text: 'E2E custom blocks test'
+          custom_blocks: '[{"type":"section","text":{"type":"mrkdwn","text":":test_tube: *E2E Test — Custom Blocks*\nThis message uses raw Block Kit JSON."}}]'
