@@ -1,21 +1,11 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import nock from 'nock';
-import {
-  setupNockCommit,
-  setupNockJobs,
-  getTemplate,
-  getApiFixture,
-  newInput,
-  gitHubToken,
-  slackToken,
-} from './helper';
+import { setupNockCommit, setupNockJobs, getTemplate, newInput, gitHubToken, slackToken } from './helper';
 
 import { Client, Input } from '../src/client';
-import { ActionsBlock, Button, HeaderBlock, SectionBlock } from '@slack/web-api';
+import { SlackBlock, ButtonDefinition } from '@sixt/slack-message';
 
 beforeAll(() => {
   // Mock logs so they don't show up in test logs.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   jest.spyOn(require('@actions/core'), 'debug').mockImplementation(jest.fn());
   nock.disableNetConnect();
   setupNockCommit(process.env.GITHUB_REPOSITORY as string, process.env.GITHUB_SHA as string);
@@ -28,7 +18,6 @@ afterAll(() => {
 
 describe('Client', () => {
   beforeEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const github = require('@actions/github');
     github.context.payload = {};
   });
@@ -102,7 +91,6 @@ describe('Client', () => {
 
     test('all individual fields when pull_request event', async () => {
       process.env.GITHUB_EVENT_NAME = 'pull_request';
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const github = require('@actions/github');
       const sha = 'expected-sha-for-pull_request_event';
       github.context.payload = {
@@ -175,7 +163,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: HeaderBlock = {
+      const block: SlackBlock = {
         type: 'header',
         text: {
           type: 'plain_text',
@@ -196,7 +184,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -217,7 +205,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -239,7 +227,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -261,7 +249,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -282,7 +270,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -302,7 +290,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: ActionsBlock = {
+      const block: SlackBlock = {
         type: 'actions',
         elements: [
           {
@@ -334,7 +322,7 @@ describe('Client', () => {
       };
       let client = new Client(input, gitHubToken, slackToken);
       let payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -364,7 +352,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -386,7 +374,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -408,7 +396,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -430,7 +418,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -452,7 +440,7 @@ describe('Client', () => {
       };
       let client = new Client(input, gitHubToken, slackToken);
       let payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -485,7 +473,7 @@ describe('Client', () => {
       };
       let client = new Client(input, gitHubToken, slackToken);
       let payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -519,7 +507,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -541,7 +529,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -563,7 +551,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -585,7 +573,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -607,7 +595,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -629,7 +617,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -651,7 +639,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -673,7 +661,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       const payload = getTemplate(input, process.env);
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         text: {
           type: 'mrkdwn',
@@ -696,7 +684,7 @@ describe('Client', () => {
       };
       const client = new Client(input, gitHubToken, slackToken);
       expect(
-        await client.custom('[{"type": "section", "text": {"type": "mrkdwn", "text": "custom message"}}]'),
+        client.custom('[{"type": "section", "text": {"type": "mrkdwn", "text": "custom message"}}]'),
       ).toMatchObject({
         text: 'Lorem ipsum',
         blocks: [
@@ -717,17 +705,17 @@ describe('Client', () => {
     nock('https://slack.com')
       .post('/api/chat.postMessage', body => {
         fn();
-        expect(body).toMatchObject({ channel: 'C123', text: 'Lorem ipsum', token: 'token' });
+        expect(body).toMatchObject({ channel: 'C123', text: 'Lorem ipsum' });
         return body;
       })
-      .reply(200, () => getApiFixture('chat.postmessage'));
+      .reply(200, { ok: true, ts: '1234.5678', channel: 'C123' });
 
     const input = newInput();
     const client = new Client(input, gitHubToken, 'token');
 
     await client.send({ channel: 'C123', text: 'Lorem ipsum' });
 
-    expect(fn).toBeCalledTimes(1);
+    expect(fn).toHaveBeenCalledTimes(1);
   });
 
   describe('injectMentionIntoMessage', () => {
@@ -762,14 +750,9 @@ describe('Client', () => {
         buttons: 'Download|primary|https://example.com/file.txt',
       };
       const client = new Client(input, gitHubToken, slackToken);
-      const buttons: Button[] = [
+      const buttons: ButtonDefinition[] = [
         {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'Download',
-            emoji: true,
-          },
+          title: 'Download',
           style: 'primary',
           url: 'https://example.com/file.txt',
         },
@@ -785,24 +768,14 @@ describe('Client', () => {
         buttons: 'Download|primary|https://example.com/file1.txt\nInstall|https://example.com/file2.txt\n',
       };
       const client = new Client(input, gitHubToken, slackToken);
-      const buttons: Button[] = [
+      const buttons: ButtonDefinition[] = [
         {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'Download',
-            emoji: true,
-          },
+          title: 'Download',
           style: 'primary',
           url: 'https://example.com/file1.txt',
         },
         {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'Install',
-            emoji: true,
-          },
+          title: 'Install',
           url: 'https://example.com/file2.txt',
         },
       ];
@@ -817,7 +790,7 @@ describe('Client', () => {
         buttons: '[Download](https://example.com/file.txt)',
       };
       const client = new Client(input, gitHubToken, slackToken);
-      const buttons: Button[] = [];
+      const buttons: ButtonDefinition[] = [];
 
       expect(client.parseButtons(input.buttons)).toStrictEqual(buttons);
     });

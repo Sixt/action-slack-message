@@ -1,0 +1,29 @@
+{
+  "name": "@sixt/slack-message",
+  "version": "0.1.0",
+  "description": "Zero-dependency library for composing and posting Slack Block Kit messages.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sixt/action-slack-message.git",
+    "directory": "packages/core"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "license": "MIT"
+}

@@ -1,8 +1,12 @@
 import { warning } from '@actions/core';
 import { context } from '@actions/github';
-import { MrkdwnElement } from '@slack/web-api';
 import { env } from 'process';
 import { Octokit } from './client';
+
+interface MrkdwnElement {
+  type: 'mrkdwn';
+  text: string;
+}
 
 export class FieldFactory {
   requestedFields: string[];
@@ -72,7 +76,7 @@ export class FieldFactory {
   }
 
   private async duration(): Promise<string> {
-    const resp = await this.octokit?.actions.listJobsForWorkflowRun({
+    const resp = await this.octokit?.rest.actions.listJobsForWorkflowRun({
       owner: context.repo.owner,
       repo: context.repo.repo,
       run_id: context.runId,
@@ -105,7 +109,7 @@ export class FieldFactory {
 
   private async job(): Promise<string> {
     const { owner } = context.repo;
-    const resp = await this.octokit?.actions.listJobsForWorkflowRun({
+    const resp = await this.octokit?.rest.actions.listJobsForWorkflowRun({
       owner,
       repo: context.repo.repo,
       run_id: context.runId,
@@ -151,7 +155,7 @@ export class FieldFactory {
     } else if (ref.includes('heads')) {
       const branch = extractName(ref);
       value = `\`<https://github.com/${owner}/${repo}/tree/${branch}|${branch}>\``;
-    } else if (ref.includes('pulls')) {
+    } else if (ref.includes('pull/')) {
       const headRefEnvVar = env['GITHUB_HEAD_REF'];
       if (headRefEnvVar) {
         const branch = extractName(headRefEnvVar);
@@ -184,7 +188,7 @@ export class FieldFactory {
   private async getCommit(octokit: Octokit) {
     const { owner, repo } = context.repo;
     const { sha: ref } = context;
-    return await octokit.repos.getCommit({ owner, repo, ref });
+    return await octokit.rest.repos.getCommit({ owner, repo, ref });
   }
 
   private get jobIsNotFound() {

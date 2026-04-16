@@ -117,5 +117,6 @@ out
 .yarn/install-state.gz
 .pnp.*
 
-# ncc
+# Build output
 lib
+packages/action/lib

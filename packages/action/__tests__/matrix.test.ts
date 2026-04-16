@@ -1,18 +1,14 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import nock from 'nock';
 
 process.env.GITHUB_RUN_ID = '2';
-process.env.MATRIX_CONTEXT = '{}';
+process.env.MATRIX_CONTEXT = '{"os": "ubuntu-18.04"}';
 
 import { getTemplate, gitHubToken, newInput, setupNockCommit, setupNockJobs, slackToken } from './helper';
-import { Client } from '../src/client';
-import { SectionBlock } from '@slack/web-api';
+import { Client, Input } from '../src/client';
+import { SlackBlock } from '@sixt/slack-message';
 
 beforeAll(() => {
   // Mock logs so they don't show up in test logs.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  jest.spyOn(require('@actions/core'), 'warning').mockImplementation(jest.fn());
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   jest.spyOn(require('@actions/core'), 'debug').mockImplementation(jest.fn());
   nock.disableNetConnect();
   setupNockCommit(process.env.GITHUB_REPOSITORY as string, process.env.GITHUB_SHA as string);
@@ -29,28 +25,26 @@ afterAll(() => {
 
 describe('MATRIX_CONTEXT', () => {
   beforeEach(() => {
-    process.env.GITHUB_EVENT_NAME = 'push';
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const github = require('@actions/github');
     github.context.payload = {};
   });
 
-  test('not runs in matrix', async () => {
-    const input = {
+  test('runs in matrix', async () => {
+    const input: Input = {
       ...newInput(),
       status: 'success',
       fields: 'job,duration',
     };
     const client = new Client(input, gitHubToken, slackToken);
     const payload = getTemplate(input, process.env);
-    const block: SectionBlock = {
+    const block: SlackBlock = {
       type: 'section',
       fields: [
         {
           type: 'mrkdwn',
-          text: '*Job*\nJob is not found.',
+          text: `*Job*\n<https://github.com/${process.env.GITHUB_REPOSITORY}/runs/399444496|build (ubuntu-18.04)>`,
         },
-        { type: 'mrkdwn', text: '*Duration*\nJob is not found.' },
+        { type: 'mrkdwn', text: '*Duration*\n1 hour 1 min 1 sec' },
       ],
     };
 

@@ -1,10 +1,21 @@
 import nock from 'nock';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { iconForStatus, Input } from '../src/client';
+import { Input } from '../src/client';
 import { FieldFactory } from '../src/fields';
 import { getOctokit } from '@actions/github';
-import { ChatPostMessageArguments, MrkdwnElement, SectionBlock } from '@slack/web-api';
+import { SlackBlock, iconForStatus } from '@sixt/slack-message';
+
+interface MrkdwnElement {
+  type: 'mrkdwn';
+  text: string;
+}
+
+interface ChatPostMessageArguments {
+  channel: string;
+  text: string;
+  blocks?: SlackBlock[];
+}
 
 export const gitHubToken = 'github-token';
 export const slackToken = 'token';
@@ -78,12 +89,11 @@ export const getTemplate = (input: Input, env: NodeJS.ProcessEnv, sha?: string):
   if (input.fields) {
     const fields = fixedFields(input.fields, env, sha);
     if (Array.isArray(fields) && fields.length !== 0) {
-      const block: SectionBlock = {
+      const block: SlackBlock = {
         type: 'section',
         fields: fields,
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       messageArguments.blocks!.unshift(block);
     }
   }
@@ -176,7 +186,6 @@ const ref = (repo: string): MrkdwnElement => {
 };
 
 const pr = (repo: string, prNumber: string): MrkdwnElement | undefined => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const github = require('@actions/github');
   if (github.context.payload.pull_request) {
     return createField({
